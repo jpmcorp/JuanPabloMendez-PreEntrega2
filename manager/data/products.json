@@ -1,0 +1,57 @@
+[
+  {
+    "pid": 1,
+    "title": "Iphone 17 Pro Max",
+    "description": "El ultimo celular de la manzanita",
+    "code": "111",
+    "price": 3500000,
+    "status": true,
+    "stock": 100,
+    "category": "Celulares",
+    "thumbnail": "https://example.com/image1.jpg"
+  },
+  {
+    "pid": 2,
+    "title": "Soundbar Samsung",
+    "description": "Una Barra de sonido de Samsung",
+    "code": "80",
+    "price": 450000,
+    "status": true,
+    "stock": 100,
+    "category": "TV/Audio",
+    "thumbnail": "https://example.com/image2.jpg"
+  },
+  {
+    "pid": 3,
+    "title": "Samsung S25+",
+    "description": "Un celular Samsung S25+",
+    "code": "300",
+    "price": 3000000,
+    "status": true,
+    "stock": 100,
+    "category": "Celulares",
+    "thumbnail": "https://example.com/image3.jpg"
+  },
+  {
+    "pid": 4,
+    "title": "Iphone 16 Pro Max",
+    "description": "El ultimo celular de la manzanita",
+    "code": "110",
+    "price": 3500000,
+    "status": true,
+    "stock": 100,
+    "category": "Celulares",
+    "thumbnail": "https://example.com/image4.jpg"
+  },
+  {
+    "pid": 5,
+    "title": "Iphone 20 Pro Max",
+    "description": "El ultimo celular de la manzanita",
+    "code": "114",
+    "price": 3500000,
+    "status": true,
+    "stock": 100,
+    "category": "Celulares",
+    "thumbnail": "https://example.com/image20.jpg"
+  }
+]
