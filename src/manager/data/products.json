@@ -53,16 +53,5 @@
     "stock": 100,
     "category": "Celulares",
     "thumbnail": "https://example.com/image20.jpg"
-  },
-  {
-    "pid": 6,
-    "title": "Iphone 25 Pro Infinit",
-    "description": "Alta merca",
-    "code": 11122,
-    "price": 1333,
-    "status": "Inactivo",
-    "stock": 1,
-    "category": "Celulares",
-    "thumbnail": "asdfsad"
   }
 ]
