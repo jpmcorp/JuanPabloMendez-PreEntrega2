@@ -1,2 +1,2 @@
-# JuanPabloMendez-PreEntrega2
-Repo para la PreEngrega 2 Curso Backend I CoderHouse - Comisión 75290
+# JuanPabloMendez-EntregaFinal
+Repo para la EntregaFinal Curso Backend I CoderHouse - Comisión 75290
