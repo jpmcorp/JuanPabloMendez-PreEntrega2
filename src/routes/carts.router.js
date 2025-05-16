@@ -1,13 +1,17 @@
 import { Router } from "express";
-import CartManager from "../manager/Cart.manager.js"; // Ensure this file exists and contains the required logic
+import CartManager from "../manager/Cart.manager.js"; // Asegúrate de que este archivo exista y contenga la lógica requerida
+import cartsModel from "../models/carts.model.js";
 
 const router = Router();
-const cartManager = new CartManager("./data/carts.json"); // Initialize CartManager with the appropriate file path
+const cartManager = new CartManager(); // Inicializa CartManager con la ruta de archivo adecuada
 
 router.get("/carts/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
-    const cart = await cartManager.getCartById(parseInt(cid, 10));
+    // Trae el carrito y desglosa los productos asociados
+    const cart = await cartsModel
+      .findOne({ cid: parseInt(cid, 10) })
+      .populate("products._id");
     if (!cart) {
       return res.status(404).json({ error: "Carrito no encontrado." });
     }
@@ -21,7 +25,7 @@ router.post("/carts", async (req, res) => {
   try {
     const { products } = req.body;
 
-    // Validate that products is an array and not empty
+    // Validar que products sea un array y no esté vacío
     if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: "El campo 'products' debe ser un array no vacío." });
     }
@@ -43,6 +47,58 @@ router.post("/carts/:cid/products/:pid", async (req, res) => {
 
     const updatedCart = await cartManager.addProductToCart(parseInt(cid, 10), parseInt(pid, 10));
     res.json(updatedCart);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// DELETE api/carts/:cid/products/:pid - Eliminar un producto específico del carrito
+router.delete("/carts/:cid/products/:pid", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const updatedCart = await cartManager.removeProductFromCart(parseInt(cid, 10), parseInt(pid, 10));
+    res.json(updatedCart);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// PUT api/carts/:cid - Actualizar todos los productos del carrito
+router.put("/carts/:cid", async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const { products } = req.body;
+    if (!Array.isArray(products)) {
+      return res.status(400).json({ error: "El campo 'products' debe ser un array." });
+    }
+    const updatedCart = await cartManager.updateCartProducts(parseInt(cid, 10), products);
+    res.json(updatedCart);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// PUT api/carts/:cid/products/:pid - Actualizar la cantidad de un producto específico
+router.put("/carts/:cid/products/:pid", async (req, res) => {
+  try {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+    if (typeof quantity !== "number" || quantity < 1) {
+      return res.status(400).json({ error: "La cantidad debe ser un número mayor a 0." });
+    }
+    const updatedCart = await cartManager.updateProductQuantity(parseInt(cid, 10), parseInt(pid, 10), quantity);
+    res.json(updatedCart);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// DELETE api/carts/:cid - Eliminar todos los productos del carrito
+router.delete("/carts/:cid", async (req, res) => {
+  try {
+    const { cid } = req.params;
+    const clearedCart = await cartManager.clearCart(parseInt(cid, 10));
+    res.json(clearedCart);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

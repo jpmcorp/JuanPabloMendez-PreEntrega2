@@ -1,22 +1,22 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
-const productsCollection = "products";
-
-const productSchema = new Schema(
+const productSchema = new mongoose.Schema(
   {
-    pid: { type: Number, required: true, unique: true }, // Campo pid único
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    code: { type: String, required: true, unique: true },
-    price: { type: Number, required: true },
-    status: { type: String, required: true },
-    stock: { type: Number, required: true },
-    category: { type: String, required: true },
-    thumbnail: { type: String, required: true },
+    pid: { type: Number, unique: true },
+    title: String,
+    description: String,
+    code: String,
+    price: Number,
+    status: Boolean,
+    stock: Number,
+    category: String,
+    thumbnail: String,
   },
   { versionKey: false }
 );
 
-const productsModel = model(productsCollection, productSchema);
+productSchema.plugin(mongoosePaginate);
 
+const productsModel = mongoose.model("Product", productSchema);
 export default productsModel;
