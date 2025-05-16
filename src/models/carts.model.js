@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const cartSchema = new mongoose.Schema({
-  cid: { type: Number, unique: true }, // Puedes usar ObjectId si prefieres
+  cid: { type: Number, unique: true },
   products: [
     {
       pid: { type: Number, required: true },

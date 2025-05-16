@@ -1,17 +1,16 @@
 const socket = io();
 
-// // Solicitar el nombre de usuario
-// let username = prompt("Ingrese su nombre de usuario");
-// socket.emit("login", username);
-
-// Notificar cuando un nuevo usuario se conecta
-socket.on("new-user", (data) => alert(`${data} se ha conectado.`));
-
 // Elementos del DOM
 const chatBox = document.querySelector("#chat-box");
 const inputMsg = document.querySelector("#input-msg");
 const form = document.querySelector("#form");
-const productList = document.querySelector("#product-list"); // Contenedor para los productos
+const productList = document.querySelector("#product-list");
+const pagination = document.createElement("div");
+pagination.id = "pagination";
+productList.after(pagination);
+
+let currentPage = 1;
+const limit = 25;
 
 // Enviar un nuevo mensaje
 form.addEventListener("submit", async (e) => {
@@ -66,19 +65,20 @@ form.addEventListener("submit", async (e) => {
 
 // Mostrar productos en tiempo real
 socket.on("update-products", () => {
-  fetchProducts(); // Vuelve a obtener los productos cuando se actualicen
+  fetchProducts(currentPage);
 });
 
 // Función para obtener productos desde el servidor
-const fetchProducts = async () => {
+const fetchProducts = async (page = 1) => {
   try {
-    const response = await fetch("/api/products");
+    const response = await fetch(`/api/products?page=${page}&limit=${limit}`);
     if (!response.ok) throw new Error("Error al obtener productos");
-    const products = await response.json();
+    const data = await response.json();
+    const products = data.payload;
 
     // Renderizar productos en el DOM
     let productItems = "";
-    if (products.length) {
+    if (products && products.length) {
       productItems = products.reduce((acc, product) => {
         return (
           acc +
@@ -98,10 +98,13 @@ const fetchProducts = async () => {
     }
     productList.innerHTML = `<div class="product-list">${productItems}</div>`;
 
+    // Paginación
+    renderPagination(data);
+
     // Agregar eventos a los botones de eliminación
     document.querySelectorAll(".delete-btn").forEach((button) => {
       button.addEventListener("click", async (e) => {
-        const productId = e.target.getAttribute("data-id"); // Obtener el ID del producto
+        const productId = e.target.getAttribute("data-id");
         if (productId) {
           await deleteProduct(productId);
         } else {
@@ -109,11 +112,32 @@ const fetchProducts = async () => {
         }
       });
     });
+
+    currentPage = data.page;
   } catch (error) {
     console.error("Error al obtener productos:", error);
     productList.innerHTML = "<p>Error al cargar productos.</p>";
   }
 };
+
+function renderPagination(data) {
+  let html = "";
+  if (data.hasPrevPage) {
+    html += `<button id="prev-page">Anterior</button>`;
+  }
+  html += `<span> Página ${data.page} de ${data.totalPages} </span>`;
+  if (data.hasNextPage) {
+    html += `<button id="next-page">Siguiente</button>`;
+  }
+  pagination.innerHTML = html;
+
+  if (data.hasPrevPage) {
+    document.getElementById("prev-page").onclick = () => fetchProducts(data.prevPage);
+  }
+  if (data.hasNextPage) {
+    document.getElementById("next-page").onclick = () => fetchProducts(data.nextPage);
+  }
+}
 
 // Función para eliminar un producto
 const deleteProduct = async (productId) => {
@@ -124,7 +148,7 @@ const deleteProduct = async (productId) => {
     if (!response.ok) throw new Error("Error al eliminar el producto");
 
     alert("Producto eliminado exitosamente!");
-    fetchProducts(); // Actualizar la lista de productos
+    fetchProducts(currentPage); // Actualizar la lista de productos
   } catch (error) {
     console.error("Error al eliminar el producto:", error);
     alert("Hubo un error al eliminar el producto.");

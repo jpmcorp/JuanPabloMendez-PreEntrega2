@@ -30,6 +30,8 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 websockets(io);
 
+app.set("io", io); // <-- Agrega esta línea
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

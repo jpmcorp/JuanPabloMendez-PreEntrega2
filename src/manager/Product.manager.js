@@ -101,8 +101,7 @@ class ProductManager {
   }
 
   async updateProduct(pid, updates) {    
-    try {      
-      const socket = io();
+    try {            
       // Buscar y actualizar el producto por el campo pid
       const updatedProduct = await productsModel.findOneAndUpdate(
         { pid },
@@ -116,9 +115,6 @@ class ProductManager {
 
       // Obtener la lista actualizada de productos
       const products = await productsModel.find({});
-
-      // Emitir el evento de actualización a través de sockets
-      socket.emit("update-products", products); // Descomentar si se usa sockets
 
       return updatedProduct;
     } catch (error) {

@@ -15,8 +15,7 @@ router.get("/products", async (req, res) => {
 
     // Construir filtro de búsqueda
     let filter = {};
-    if (query) {      
-      // Ejemplo: buscar por categoría o status
+    if (query) {
       filter = {
         $or: [
           { category: { $regex: query, $options: "i" } },
@@ -40,16 +39,31 @@ router.get("/products", async (req, res) => {
 
     // Total de productos para paginación
     const totalProducts = await productsModel.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+
+    // Construir links
+    const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}${req.path}`;
+    const prevLink = hasPrevPage
+      ? `${baseUrl}?page=${page - 1}&limit=${limit}${sort ? `&sort=${sort}` : ""}${query ? `&query=${query}` : ""}`
+      : null;
+    const nextLink = hasNextPage
+      ? `${baseUrl}?page=${page + 1}&limit=${limit}${sort ? `&sort=${sort}` : ""}${query ? `&query=${query}` : ""}`
+      : null;
 
     res.json({
       status: "success",
       payload: products,
-      totalPages: Math.ceil(totalProducts / limit),
-      prevPage: page > 1 ? page - 1 : null,
-      nextPage: page * limit < totalProducts ? page + 1 : null,
+      totalPages,
+      prevPage: hasPrevPage ? page - 1 : null,
+      nextPage: hasNextPage ? page + 1 : null,
       page,
-      hasPrevPage: page > 1,
-      hasNextPage: page * limit < totalProducts
+      hasPrevPage,
+      hasNextPage,
+      prevLink,
+      nextLink
     });
   } catch (error) {
     console.log(error);
@@ -85,10 +99,10 @@ router.put("/products/:pid", async (req, res) => {
     const updates = req.body;
 
     const updatedProduct = await productManager.updateProduct(parseInt(pid, 10), updates);
-    res.json({ message: "Producto actualizado exitosamente!!!", product: updatedProduct });
-    
+    res.json({ message: "Producto actualizado exitosamente!!!", product: updatedProduct });    
     // Emitir evento para actualizar productos en tiempo real
     req.app.get("io").emit("update-products");
+    
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
