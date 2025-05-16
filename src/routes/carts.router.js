@@ -71,7 +71,23 @@ router.put("/carts/:cid", async (req, res) => {
     if (!Array.isArray(products)) {
       return res.status(400).json({ error: "El campo 'products' debe ser un array." });
     }
-    const updatedCart = await cartManager.updateCartProducts(parseInt(cid, 10), products);
+
+    // Buscar el _id de cada producto por su pid
+    const productsModel = (await import("../models/products.model.js")).default;
+    const productsWithMongoId = [];
+    for (const prod of products) {
+      const productDoc = await productsModel.findOne({ pid: prod.pid });
+      if (!productDoc) {
+        return res.status(400).json({ error: `Producto con pid ${prod.pid} no encontrado.` });
+      }
+      productsWithMongoId.push({
+        _id: productDoc._id,
+        pid: prod.pid,
+        quantity: prod.quantity || 1,
+      });
+    }
+
+    const updatedCart = await cartManager.updateCartProducts(parseInt(cid, 10), productsWithMongoId);
     res.json(updatedCart);
   } catch (error) {
     res.status(400).json({ error: error.message });
