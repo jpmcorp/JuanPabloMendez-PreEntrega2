@@ -30,7 +30,7 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 websockets(io);
 
-app.set("io", io); // <-- Agrega esta línea
+app.set("io", io);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +45,7 @@ app.use("/", viewsRouter);
 app.use("/api", productsRouter);
 app.use("/api", cartsRouter);
 
-httpServer.listen(PORT, () =>
-  console.log("Servidor levantado en puerto: " + PORT)
-);
+httpServer.listen(PORT, () => {
+  console.log("Servidor levantado en puerto: " + PORT);
+  console.log("PAGINA DE INICIO: " + "http://localhost:" + PORT + "/realtimeproducts");
+});

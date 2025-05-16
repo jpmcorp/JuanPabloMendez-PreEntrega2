@@ -10,7 +10,7 @@ pagination.id = "pagination";
 productList.after(pagination);
 
 let currentPage = 1;
-const limit = 25;
+const limit = 15;
 
 // Enviar un nuevo mensaje
 form.addEventListener("submit", async (e) => {
@@ -83,13 +83,16 @@ const fetchProducts = async (page = 1) => {
         return (
           acc +
           `<div class="product-item">
+            <img src="/iphone.jpg" alt="Imagen producto" style="width:100px;max-width:100px;border-radius:6px;margin-bottom:8px;">
             <h3>${product.title}</h3>
             <p><strong>Descripción:</strong> ${product.description}</p>
+            <p><strong>Categoría:</strong> ${product.category}</p>
             <p><strong>Precio:</strong> $${product.price}</p>
             <p><strong>Código:</strong> ${product.code}</p>
             <p><strong>ID:</strong> ${product.pid}</p>
             <p><strong>Stock:</strong> ${product.stock}</p>
-            <button class="delete-btn" data-id="${product.pid}">Eliminar</button>
+            <button class="delete-btn" data-id="${product.pid}">Eliminar Producto</button>
+            <button class="add-cart-btn" data-id="${product.pid}">Agregar al carrito</button>
           </div>`
         );
       }, "");
@@ -113,6 +116,22 @@ const fetchProducts = async (page = 1) => {
       });
     });
 
+    // Después de renderizar los productos, agrega la lógica para el botón "Agregar al carrito"
+    document.querySelectorAll(".add-cart-btn").forEach((button) => {
+      button.addEventListener("click", async (e) => {
+        const productId = e.target.getAttribute("data-id");
+        try {
+          const response = await fetch(`/api/carts/1/products/${productId}`, {
+            method: "POST",
+          });
+          if (!response.ok) throw new Error("No se pudo agregar al carrito");
+          alert("Producto agregado al carrito 1");
+        } catch (error) {
+          alert("Error al agregar al carrito");
+        }
+      });
+    });
+
     currentPage = data.page;
   } catch (error) {
     console.error("Error al obtener productos:", error);
@@ -132,10 +151,12 @@ function renderPagination(data) {
   pagination.innerHTML = html;
 
   if (data.hasPrevPage) {
-    document.getElementById("prev-page").onclick = () => fetchProducts(data.prevPage);
+    document.getElementById("prev-page").onclick = () =>
+      fetchProducts(data.prevPage);
   }
   if (data.hasNextPage) {
-    document.getElementById("next-page").onclick = () => fetchProducts(data.nextPage);
+    document.getElementById("next-page").onclick = () =>
+      fetchProducts(data.nextPage);
   }
 }
 
@@ -157,3 +178,12 @@ const deleteProduct = async (productId) => {
 
 // Llamar a la función para obtener productos al cargar la página
 fetchProducts();
+
+// Crear y agregar el botón "Ver Carrito" arriba a la derecha
+const verCarritoBtn = document.createElement("button");
+verCarritoBtn.textContent = "Ver Carrito";
+verCarritoBtn.className = "ver-carrito-btn";
+verCarritoBtn.onclick = () => {
+  window.location.href = "/cartView";
+};
+document.body.appendChild(verCarritoBtn);
