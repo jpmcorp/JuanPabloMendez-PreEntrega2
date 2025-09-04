@@ -35,8 +35,10 @@ const initializePassport = () => {
         return done(null, false, { message: 'El email ya está registrado' });
       }
       
-      // Crear carrito para el nuevo usuario
-      const newCart = await cartsModel.create({ products: [] });
+      // Crear carrito para el nuevo usuario con cid único
+      const lastCart = await cartsModel.findOne().sort({ cid: -1 });
+      const newCid = lastCart ? lastCart.cid + 1 : 1;
+      const newCart = await cartsModel.create({ cid: newCid, products: [] });
       
       const newUser = {
         first_name: first_name.trim(),
