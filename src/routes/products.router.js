@@ -1,11 +1,13 @@
 import { Router } from "express";
 import ProductManager from "../manager/Product.manager.js";
 import productsModel from "../models/products.model.js";
+import { requireAuth, requireRole } from "../middleware/requireAuth.middleware.js";
 
 const router = Router();
 const productManager = new ProductManager();
 
-router.get("/products", async (req, res) => {
+// Rutas que requieren autenticación
+router.get("/products", requireAuth, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page) || 1;
@@ -67,7 +69,8 @@ router.get("/products", async (req, res) => {
   }
 });
 
-router.post("/products", async (req, res) => {
+// Solo administradores pueden crear productos
+router.post("/products", requireAuth, requireRole(['admin']), async (req, res) => {
   try {
     const result = await productManager.addProduct(req.body);
     res.json(result);
@@ -79,7 +82,7 @@ router.post("/products", async (req, res) => {
   }
 });
 
-router.get("/products/:pid", async (req, res) => {
+router.get("/products/:pid", requireAuth, async (req, res) => {
   try {
     const { pid } = req.params;
     const product = await productManager.getProductById(parseInt(pid, 10));
@@ -89,7 +92,8 @@ router.get("/products/:pid", async (req, res) => {
   }
 });
 
-router.put("/products/:pid", async (req, res) => {
+// Solo administradores pueden actualizar productos
+router.put("/products/:pid", requireAuth, requireRole(['admin']), async (req, res) => {
   try {
     const { pid } = req.params;
     const updates = req.body;
@@ -104,7 +108,8 @@ router.put("/products/:pid", async (req, res) => {
   }
 });
 
-router.delete("/products/:pid", async (req, res) => {
+// Solo administradores pueden eliminar productos
+router.delete("/products/:pid", requireAuth, requireRole(['admin']), async (req, res) => {
   try {
     const { pid } = req.params; // Obtener el parámetro pid
     if (!pid) {

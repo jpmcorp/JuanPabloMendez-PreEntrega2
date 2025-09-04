@@ -1,11 +1,13 @@
 import { Router } from "express";
 import CartManager from "../manager/Cart.manager.js";
 import cartsModel from "../models/carts.model.js";
+import { requireAuth } from "../middleware/requireAuth.middleware.js";
 
 const router = Router();
-const cartManager = new CartManager(); // Inicializa CartManager con la ruta de archivo adecuada
+const cartManager = new CartManager();
 
-router.get("/carts/:cid", async (req, res) => {
+// Todas las rutas de carritos requieren autenticación
+router.get("/carts/:cid", requireAuth, async (req, res) => {
   try {
     const { cid } = req.params;
     // Trae el carrito y desglosa los productos asociados

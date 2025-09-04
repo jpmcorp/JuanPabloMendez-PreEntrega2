@@ -4,26 +4,35 @@ import handlebars from "express-handlebars";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import sessionsRouter from "./routes/sessions.router.js";
 import { Server } from "socket.io";
 import websockets from "./websockets.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
+import cookieParser from "cookie-parser";
+import { validateEnvironment, config } from "./config/environment.config.js";
+import logger from "./middleware/logger.middleware.js";
+import { showEndpoints, showEndpointsTable } from "./utils/endpoints.util.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = 8000;
+// Validar variables de entorno antes de continuar
+validateEnvironment();
+
+const PORT = config.server.port;
 const app = express();
 
-dotenv.config();
+initializePassport();
 // Conexión a la base de datos MongoDB Atlas
 mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("Conectado a la base de datos Mongo Atlas"))
+  .connect(config.mongodb.uri)
+  .then(() => console.log("✅ Conectado a la base de datos MongoDB Atlas"))
   .catch((err) =>
-    console.log("No se pudo conectar a la base de datos Mongo Atlas: " + err)
+    console.log("❌ No se pudo conectar a la base de datos MongoDB Atlas: " + err)
   );
 
 const httpServer = http.createServer(app);
@@ -34,6 +43,9 @@ app.set("io", io);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(logger);
+app.use(passport.initialize());
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", path.join(__dirname, "/views"));
@@ -44,8 +56,22 @@ app.use("/", viewsRouter);
 
 app.use("/api", productsRouter);
 app.use("/api", cartsRouter);
+app.use("/api/sessions", sessionsRouter);
 
 httpServer.listen(PORT, () => {
-  console.log("Servidor levantado en puerto: " + PORT);
-  console.log("PAGINA DE INICIO: " + "http://localhost:" + PORT + "/realtimeproducts");
+  console.log(`✅ Servidor levantado en puerto: ${PORT}`);
+  
+  // Mostrar endpoints según configuración
+  switch(config.server.showEndpoints) {
+    case 'compact':
+      showEndpoints(true);
+      break;
+    case 'table':
+      showEndpointsTable();
+      break;
+    case 'full':
+    default:
+      showEndpoints();
+      break;
+  }
 });

@@ -1,0 +1,81 @@
+<div class="auth-container">
+    <h2>Iniciar Sesión</h2>
+    
+    <div id="successMessage" class="success-message" style="display: none;">
+        <h3>✅ Login exitoso</h3>
+        <p>Bienvenido! Redirigiendo...</p>
+    </div>
+    
+    <div id="errorMessage" class="error-message" style="display: none;">
+        <h3>❌ Error de autenticación</h3>
+        <p id="errorText"></p>
+    </div>
+    
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button type="submit" id="loginButton">Ingresar</button>
+    </form>
+    <p><a href="/register">¿No tienes cuenta? Regístrate</a></p>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const button = document.getElementById('loginButton');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const form = document.getElementById('loginForm');
+        
+        // Cambiar texto del botón y deshabilitarlo
+        button.textContent = 'Ingresando...';
+        button.disabled = true;
+        
+        // Ocultar mensajes previos
+        successMessage.style.display = 'none';
+        errorMessage.style.display = 'none';
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+            const response = await fetch('/api/sessions/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Mostrar mensaje de éxito
+                successMessage.style.display = 'block';
+                form.style.display = 'none';
+                
+                // Redirigir después de 1.5 segundos
+                setTimeout(() => {
+                    window.location.href = '/realtimeproducts';
+                }, 1500);
+            } else {
+                // Mostrar mensaje de error
+                errorMessage.style.display = 'block';
+                document.getElementById('errorText').textContent = data.message || 'Credenciales incorrectas';
+                
+                // Restaurar botón
+                button.textContent = 'Ingresar';
+                button.disabled = false;
+            }
+        } catch (error) {
+            // Mostrar mensaje de error de conexión
+            errorMessage.style.display = 'block';
+            document.getElementById('errorText').textContent = 'Error de conexión. Inténtalo de nuevo.';
+            
+            // Restaurar botón
+            button.textContent = 'Ingresar';
+            button.disabled = false;
+        }
+    });
+</script>
