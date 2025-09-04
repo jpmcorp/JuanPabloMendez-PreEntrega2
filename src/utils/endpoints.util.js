@@ -17,6 +17,7 @@ export const showEndpoints = (compact = false) => {
   console.log(`   POST   ${baseUrl}/api/sessions/register    - Registro de usuario`);
   console.log(`   POST   ${baseUrl}/api/sessions/login       - Iniciar sesión`);
   console.log(`   GET    ${baseUrl}/api/sessions/current     - Usuario actual (🔒 Privado)`);
+  console.log(`   GET    ${baseUrl}/api/sessions/users       - Listar usuarios (🔒 Dev: Usuario | Prod: Admin)`);
   console.log(`   POST   ${baseUrl}/api/sessions/logout      - Cerrar sesión`);
   
   console.log('\n📦 PRODUCTOS (/api/products):');
@@ -78,6 +79,7 @@ export const showEndpointsTable = () => {
   console.log('│ POST    │ /api/sessions/register                │ Registro usuario    │ Público │');
   console.log('│ POST    │ /api/sessions/login                   │ Iniciar sesión      │ Público │');
   console.log('│ GET     │ /api/sessions/current                 │ Usuario actual      │ Privado │');
+  console.log('│ GET     │ /api/sessions/users                   │ Listar usuarios     │ Dev:User│');
   console.log('│ POST    │ /api/sessions/logout                  │ Cerrar sesión       │ Privado │');
   console.log('├─────────┼───────────────────────────────────────┼─────────────────────┼─────────┤');
   console.log('│ GET     │ /api/products                         │ Listar productos    │ Usuario │');

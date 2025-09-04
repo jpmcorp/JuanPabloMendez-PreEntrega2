@@ -14,7 +14,7 @@ const initializePassport = () => {
     passReqToCallback: true,
     usernameField: 'email'
   }, async (req, username, password, done) => {
-    const { first_name, last_name, email, age } = req.body;
+    const { first_name, last_name, email, age, role } = req.body;
     
     try {
       // Validaciones básicas
@@ -44,7 +44,8 @@ const initializePassport = () => {
         email: email.toLowerCase().trim(),
         age: parseInt(age),
         password: createHash(password),
-        cart: newCart._id
+        cart: newCart._id,
+        role: role && ['user', 'admin'].includes(role) ? role : 'user' // Permitir especificar rol
       };
       
       let result = await User.create(newUser);
