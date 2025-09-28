@@ -335,7 +335,7 @@ export class MailerController {
             }
 
             // Enviar notificación de orden
-            const result = await messagingService.sendOrderNotification(phoneNumber, orderCode, total);
+            const result = await messagingService.sendPurchaseNotification(phoneNumber, orderCode, total, 'Cliente');
 
             res.status(200).json({
                 status: 'success',

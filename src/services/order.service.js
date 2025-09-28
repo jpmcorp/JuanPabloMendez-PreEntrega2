@@ -126,7 +126,7 @@ class OrderService {
         // Enviar notificación por SMS (si está configurado y el usuario tiene teléfono)
         try {
             if (messagingService.isConfigured() && user.phone) {
-                await messagingService.sendOrderNotification(user.phone, orderCode, total);
+                await messagingService.sendPurchaseNotification(user.phone, orderCode, total, user.first_name || 'Cliente');
                 console.log(`SMS de notificación enviado a: ${user.phone}`);
             }
         } catch (smsError) {
@@ -185,7 +185,7 @@ class OrderService {
         // Enviar notificación por SMS (si está configurado)
         try {
             if (messagingService.isConfigured() && updatedOrder.phone) {
-                await messagingService.sendOrderStatusUpdate(updatedOrder.phone, updatedOrder.code, status);
+                await messagingService.sendOrderStatusNotification(updatedOrder.phone, updatedOrder.code, status, updatedOrder.customerName || 'Cliente');
                 console.log(`SMS de cambio de estado enviado a: ${updatedOrder.phone}`);
             }
         } catch (smsError) {
