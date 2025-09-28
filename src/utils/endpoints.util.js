@@ -33,6 +33,17 @@ export const showEndpoints = (compact = false) => {
   console.log(`   POST   ${baseUrl}/api/carts/:cid/product/:pid - Agregar producto (🔒 Usuario)`);
   console.log(`   DELETE ${baseUrl}/api/carts/:cid/product/:pid - Eliminar producto (🔒 Usuario)`);
   
+  console.log('\n🎫 ÓRDENES/TICKETS (/api/orders):');
+  console.log(`   GET    ${baseUrl}/api/orders               - Listar órdenes (🔒 Usuario/Admin)`);
+  console.log(`   GET    ${baseUrl}/api/orders/my            - Mis órdenes (🔒 Usuario)`);
+  console.log(`   GET    ${baseUrl}/api/orders/:id           - Orden por ID (🔒 Usuario/Admin)`);
+  console.log(`   GET    ${baseUrl}/api/orders/code/:code    - Orden por código (🔒 Usuario/Admin)`);
+  console.log(`   POST   ${baseUrl}/api/orders/purchase      - Crear orden desde carrito (🔒 Usuario)`);
+  console.log(`   POST   ${baseUrl}/api/orders               - Crear orden manual (🔒 Usuario)`);
+  console.log(`   PUT    ${baseUrl}/api/orders/:id           - Actualizar orden (🔒 Admin)`);
+  console.log(`   PATCH  ${baseUrl}/api/orders/:id/status    - Cambiar estado (🔒 Admin)`);
+  console.log(`   DELETE ${baseUrl}/api/orders/:id           - Eliminar orden (🔒 Admin)`);
+  
   console.log('\n🎨 VISTAS WEB:');
   console.log(`   GET    ${baseUrl}/                         - Página principal (→ login)`);
   console.log(`   GET    ${baseUrl}/login                    - Formulario de login`);
@@ -92,6 +103,12 @@ export const showEndpointsTable = () => {
   console.log('│ POST    │ /api/carts                            │ Crear carrito       │ Usuario │');
   console.log('│ POST    │ /api/carts/:cid/product/:pid          │ Agregar producto    │ Usuario │');
   console.log('│ DELETE  │ /api/carts/:cid/product/:pid          │ Eliminar producto   │ Usuario │');
+  console.log('├─────────┼───────────────────────────────────────┼─────────────────────┼─────────┤');
+  console.log('│ GET     │ /api/orders                           │ Listar órdenes      │ Usuario │');
+  console.log('│ GET     │ /api/orders/my                        │ Mis órdenes         │ Usuario │');
+  console.log('│ POST    │ /api/orders/purchase                  │ Comprar (carrito)   │ Usuario │');
+  console.log('│ GET     │ /api/orders/:id                       │ Ver orden           │ Usuario │');
+  console.log('│ PATCH   │ /api/orders/:id/status                │ Cambiar estado      │ Admin   │');
   console.log('└─────────┴───────────────────────────────────────┴─────────────────────┴─────────┘');
   console.log(`\n🌐 Base URL: ${baseUrl}`);
   console.log(`📱 Web App: ${baseUrl}/login\n`);

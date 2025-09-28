@@ -40,5 +40,25 @@ export const config = {
     port: process.env.PORT || 8000,
     env: process.env.NODE_ENV || 'development',
     showEndpoints: process.env.SHOW_ENDPOINTS || 'full' // full, compact, table
+  },
+  mailing: {
+    service: process.env.MAIL_SERVICE,
+    user: process.env.MAIL_USER,
+    password: process.env.MAIL_PASSWORD,
+    from: process.env.MAIL_FROM,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: process.env.SMTP_SECURE === 'true'
+  },
+  messaging: {
+    twilio: {
+      accountSid: process.env.TWILIO_ACCOUNT_SID,
+      authToken: process.env.TWILIO_AUTH_TOKEN,
+      fromSms: process.env.TWILIO_FROM_SMS,
+      fromWhatsapp: process.env.TWILIO_FROM_WHATSAPP
+    }
+  },
+  platform: {
+    url: process.env.PLATFORM_URL || 'http://localhost:8080'
   }
 };

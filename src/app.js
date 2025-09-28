@@ -5,6 +5,9 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import sessionsRouter from "./routes/sessions.router.js";
+import ordersRouter from "./routes/orders.router.js";
+import mailerRouter from "./routes/mailer.router.js";
+import messagingRouter from "./routes/messaging.router.js";
 import { Server } from "socket.io";
 import websockets from "./websockets.js";
 import path from "path";
@@ -57,6 +60,9 @@ app.use("/", viewsRouter);
 app.use("/api", productsRouter);
 app.use("/api", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
+app.use("/api", ordersRouter);
+app.use("/api/v1/mailer", mailerRouter);
+app.use("/api/v1/messaging", messagingRouter);
 
 httpServer.listen(PORT, () => {
   console.log(`✅ Servidor levantado en puerto: ${PORT}`);

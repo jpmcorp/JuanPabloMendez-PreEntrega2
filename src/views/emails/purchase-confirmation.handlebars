@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de compra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+        }
+        .purchase-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .order-details {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-price {
+            text-align: right;
+            font-weight: bold;
+        }
+        .total-section {
+            background-color: #d4edda;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+        .total {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #155724;
+        }
+        .success-icon {
+            text-align: center;
+            font-size: 48px;
+            color: #28a745;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>¡Compra confirmada!</h1>
+    </div>
+    
+    <div class="content">
+        <div class="success-icon">
+            ✅
+        </div>
+        
+        <div class="purchase-box">
+            <h2>¡Gracias por tu compra, {{customerName}}!</h2>
+            <p>Tu pedido ha sido procesado exitosamente y pronto comenzaremos a prepararlo.</p>
+            
+            <div class="order-details">
+                <p><strong>Código de orden:</strong> {{code}}</p>
+                <p><strong>Fecha de compra:</strong> {{purchaseDatetime}}</p>
+                <p><strong>Email:</strong> {{purchaser}}</p>
+            </div>
+            
+            <h3>Resumen de tu pedido:</h3>
+            {{#each products}}
+            <div class="product-item">
+                <div class="product-info">
+                    <strong>{{title}}</strong><br>
+                    <small>Cantidad: {{quantity}} × ${{price}}</small>
+                </div>
+                <div class="product-price">
+                    ${{multiply quantity price}}
+                </div>
+            </div>
+            {{/each}}
+            
+            <div class="total-section">
+                <div class="total">
+                    Total pagado: ${{amount}}
+                </div>
+            </div>
+            
+            <p><strong>¿Qué sigue?</strong></p>
+            <ul>
+                <li>Recibirás actualizaciones por email sobre el estado de tu pedido</li>
+                <li>Comenzaremos a preparar tu pedido en las próximas horas</li>
+                <li>Te notificaremos cuando tu pedido esté listo para envío</li>
+                <li>Puedes consultar el estado de tu pedido en cualquier momento</li>
+            </ul>
+            
+            <div style="text-align: center;">
+                <a href="{{orderTrackingUrl}}" class="button">Seguir mi pedido</a>
+            </div>
+        </div>
+        
+        <p>Si tienes alguna pregunta sobre tu pedido, no dudes en contactarnos. Nuestro equipo de atención al cliente estará encantado de ayudarte.</p>
+        
+        <p>¡Gracias por confiar en nosotros!</p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2024 Ecommerce Platform. Todos los derechos reservados.</p>
+        <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+        <p>Para consultas, contacta a nuestro equipo de soporte.</p>
+    </div>
+</body>
+</html>

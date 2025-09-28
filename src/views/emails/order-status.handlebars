@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de tu orden</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+        }
+        .order-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .order-details {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status.pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .status.paid {
+            background-color: #28a745;
+            color: white;
+        }
+        .status.delivered {
+            background-color: #007bff;
+            color: white;
+        }
+        .status.cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #28a745;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Estado de tu orden</h1>
+    </div>
+    
+    <div class="content">
+        <div class="order-box">
+            <h2>Hola {{customerName}}!</h2>
+            <p>Tu orden <strong>{{code}}</strong> ha sido actualizada.</p>
+            
+            <div class="order-details">
+                <p><strong>Código de orden:</strong> {{code}}</p>
+                <p><strong>Fecha:</strong> {{purchaseDatetime}}</p>
+                <p><strong>Estado actual:</strong> 
+                    <span class="status {{status}}">{{status}}</span>
+                </p>
+            </div>
+            
+            <h3>Productos:</h3>
+            {{#each products}}
+            <div class="product-item">
+                <div>
+                    <strong>{{title}}</strong><br>
+                    <small>Cantidad: {{quantity}}</small>
+                </div>
+                <div>
+                    ${{price}} c/u
+                </div>
+            </div>
+            {{/each}}
+            
+            <div class="total">
+                Total: ${{amount}}
+            </div>
+            
+            {{#if (eq status 'paid')}}
+            <p><strong>¡Gracias por tu pago!</strong> Tu orden está siendo procesada y pronto la recibirás.</p>
+            {{else if (eq status 'delivered')}}
+            <p><strong>¡Tu orden ha sido entregada!</strong> Esperamos que disfrutes tu compra.</p>
+            {{else if (eq status 'cancelled')}}
+            <p><strong>Tu orden ha sido cancelada.</strong> Si tienes alguna pregunta, por favor contáctanos.</p>
+            {{else}}
+            <p>Tu orden está pendiente de pago. Una vez que realices el pago, comenzaremos a procesarla.</p>
+            {{/if}}
+        </div>
+        
+        <p>Si tienes alguna pregunta sobre tu orden, no dudes en contactarnos.</p>
+        <p>¡Gracias por elegirnos!</p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2024 Ecommerce Platform. Todos los derechos reservados.</p>
+        <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+    </div>
+</body>
+</html>
