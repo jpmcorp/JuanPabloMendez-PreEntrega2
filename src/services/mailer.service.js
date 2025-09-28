@@ -16,34 +16,41 @@ Handlebars.registerHelper('multiply', (a, b) => a * b);
 Handlebars.registerHelper('add', (a, b) => a + b);
 Handlebars.registerHelper('subtract', (a, b) => a - b);
 
-// Variables de entorno para SMTP
-const {
-    SMTP_HOST,
-    SMTP_PORT,
-    SMTP_SECURE,
-    SMTP_USER,
-    SMTP_PASS,
-    SMTP_FROM
-} = process.env;
+// Variables de entorno para email
+// No desestructuramos al inicio, usamos process.env directamente
 
 /**
  * Construye el transporte de nodemailer
  * @returns {nodemailer.Transporter} Transporte configurado
  */
 function buildTransport() {
-    if (!SMTP_HOST) {
-        throw new Error("SMTP_HOST no está definido en las variables de entorno");
+    // Configuración de transporte de email
+    
+    // Opción 1: Usar servicio predefinido (Gmail, Outlook, etc.)
+    if (process.env.MAIL_SERVICE && process.env.MAIL_USER && process.env.MAIL_PASSWORD) {
+        return nodemailer.createTransport({
+            service: process.env.MAIL_SERVICE,
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASSWORD
+            }
+        });
     }
     
-    return nodemailer.createTransporter({
-        host: SMTP_HOST,
-        port: Number(SMTP_PORT || 587),
-        secure: String(SMTP_SECURE || "false") === "true",
-        auth: { 
-            user: SMTP_USER, 
-            pass: SMTP_PASS 
-        },
-    });
+    // Opción 2: Usar configuración SMTP manual
+    if (process.env.SMTP_HOST) {
+        return nodemailer.createTransport({
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT || 587),
+            secure: String(process.env.SMTP_SECURE || "false") === "true",
+            auth: { 
+                user: process.env.SMTP_USER, 
+                pass: process.env.SMTP_PASS 
+            },
+        });
+    }
+    
+    throw new Error("No hay configuración de email disponible. Configure MAIL_SERVICE o SMTP_HOST en las variables de entorno");
 }
 
 /**
@@ -87,7 +94,7 @@ export class MailerService {
         const html = await renderTemplate(template, context);
         
         const info = await transport.sendMail({
-            from: SMTP_FROM || SMTP_USER,
+            from: process.env.MAIL_FROM || process.env.SMTP_FROM || process.env.MAIL_USER || process.env.SMTP_USER,
             to,
             subject,
             html,

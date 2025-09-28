@@ -2,6 +2,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Debug: Verificar que las variables de mailing se carguen
+// Variables de entorno para mailing configuradas correctamente
+
 const requiredEnvVars = [
   'MONGODB_URI',
   'JWT_SECRET'

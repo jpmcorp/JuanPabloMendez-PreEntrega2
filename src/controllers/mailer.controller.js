@@ -118,12 +118,12 @@ export class MailerController {
             }
 
             // Enviar email de recuperación de contraseña
-            const result = await mailerService.sendPasswordReset({
-                to: email,
+            const result = await mailerService.sendPasswordReset(
+                email,
                 firstName,
                 resetToken,
                 resetUrl
-            });
+            );
 
             res.status(200).json({
                 status: 'success',
